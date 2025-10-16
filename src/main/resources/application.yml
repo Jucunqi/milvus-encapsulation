@@ -1,0 +1,15 @@
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 200MB
+      max-request-size: 200MB
+  profiles:
+      active: test
+
+# 日志级别
+logging:
+  level:
+    com.jcq.milvusEncap.mapper: info
+
+

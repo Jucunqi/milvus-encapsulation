@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <logger name="org.springframework.web" level="INFO" />
+    <!--<logger name="com.saicmotor.dscappapi.mapper" level="DEBUG" />-->
+
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- prod环境配置 -->
+    <springProfile name="prod">
+        <appender name="datasourceLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <!--日志保存到此，根据fileNamePattern进行保存，新的日志继续保存到该文件-->
+            <!--        <file>/logs/datasource/datasource.log</file>-->
+            <!--按天轮转-->
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <!--一整天归档文件名称，%d{yyyy-MM-dd}代表日期-->
+                <fileNamePattern>logs/waterRecord.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <!--文件最大保存天数-->
+                <maxHistory>30</maxHistory>
+                <!--单个日志最大容量，至少10MB才能看出来-->
+                <maxFileSize>100MB</maxFileSize>
+                <!--所有日志最多占多大容量-->
+                <totalSizeCap>2GB</totalSizeCap>
+            </rollingPolicy>
+            <encoder>
+                <!--日志的输入格式-->
+                <!--            <pattern>%d %-5level [%-18.18thread] - [%X{requestId:-SYSTEM}]:====== %msg%n</pattern>-->
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+    </springProfile>
+
+    <!-- test环境配置 -->   
+    <springProfile name="test">
+        <appender name="datasourceLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <!--日志保存到此，根据fileNamePattern进行保存，新的日志继续保存到该文件-->
+            <!--        <file>/logs/datasource/datasource.log</file>-->
+            <!--按天轮转-->
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <!--一整天归档文件名称，%d{yyyy-MM-dd}代表日期-->
+                <fileNamePattern>logs/waterRecord-test.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <!--文件最大保存天数-->
+                <maxHistory>30</maxHistory>
+                <!--单个日志最大容量，至少10MB才能看出来-->
+                <maxFileSize>100MB</maxFileSize>
+                <!--所有日志最多占多大容量-->
+                <totalSizeCap>2GB</totalSizeCap>
+            </rollingPolicy>
+            <encoder>
+                <!--日志的输入格式-->
+                <!--            <pattern>%d %-5level [%-18.18thread] - [%X{requestId:-SYSTEM}]:====== %msg%n</pattern>-->
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+    </springProfile>
+
+    <root level="INFO">
+        <appender-ref ref="consoleAppender"/>
+        <appender-ref ref="datasourceLog"/>
+    </root>
+
+</configuration>
