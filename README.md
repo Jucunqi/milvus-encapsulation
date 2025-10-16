@@ -49,7 +49,7 @@ milvus-encapsulation/
 
 ### 1. 连接池配置
 
-首先，我们需要配置 Milvus 连接池
+首先，需要配置 Milvus 连接池
 
 ```java
 @Configuration
@@ -127,7 +127,7 @@ milvus:
 
 ### 2. 实体类注解设计
 
-我们设计了两个核心注解来建立 Java 实体与 Milvus Collection 的映射关系：
+我设计了两个核心注解来建立 Java 实体与 Milvus Collection 的映射关系：
 
 #### CollectionName 注解
 
@@ -212,7 +212,7 @@ public class SamplesDO {
 
 ### 3. 命名策略处理
 
-由于 Java 习惯使用驼峰命名，而 数据库 推荐使用下划线命名，我们需要一个自动转换的策略：
+由于 Java 习惯使用驼峰命名，而 数据库 推荐使用下划线命名，所以需要一个自动转换的策略：
 
 ```java
 import cn.hutool.core.text.CharSequenceUtil;
@@ -233,7 +233,7 @@ public class CamelToUnderlineNamingStrategy implements FieldNamingStrategy {
 
 ### 4. 基础服务封装
 
-这是最核心的部分，我们封装了一个泛型的基础服务类 `MilvusBaseService<T>`：
+这是最核心的部分，我封装了一个泛型的基础服务类 `MilvusBaseService<T>`：
 
 ```java
 @Slf4j
@@ -451,7 +451,8 @@ public PageResult<T> selectPage(PageParam param, String filter) {
 
 **更新操作：**
 
-Milvus 原生不支持更新操作，我们采用**先删除后插入**的策略：
+Milvus 原生不支持更新操作，所以我采用**先删除后插入**的策略，这里存在事物的问题，Milvus 对事务有一定的支持，但并不完全支持传统意义上的 ACID 事务。
+这里后续需要优化
 
 ```java
 /**
@@ -478,7 +479,7 @@ public Long updateById(T entity) {
 
 ### 5. Lambda 查询构造器
 
-我们实现了类似 MyBatis-Plus 的 LambdaQueryWrapper：由于目前业务并不复杂，所以只实现了基础的查询条件
+我实现了一个类似 MyBatis-Plus 的 LambdaQueryWrapper：由于目前业务并不复杂，所以只实现了基础的查询条件
 
 ```java
 public class MilvusLambdaQueryWrapper<T> {
@@ -889,7 +890,7 @@ Long sampleId = samplesService.createSamples(reqVO);
 
 
 
-> 希望这篇内容对大家有所帮助！
+> 工作里遇到个棘手问题，翻了圈没找到成熟好用的框架，又赶时间，就自己整理了份代码先解决需求。它肯定比不上大佬框架的周全，但能帮上有同样困扰的朋友落地业务。也盼着早点有成熟工具出来，省得大家重复踩坑～ 要是这份代码对你有用，或者有优化建议，随时交流！
 
 
 
@@ -903,7 +904,7 @@ Long sampleId = samplesService.createSamples(reqVO);
 
 
 
-**项目地址**：
+**项目地址**：https://github.com/Jucunqi/milvus-encapsulation
 
 本文示例代码已上传至 GitHub，欢迎 Star 和 Fork！
 
