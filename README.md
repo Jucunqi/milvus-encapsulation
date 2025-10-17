@@ -21,7 +21,7 @@
 
 ### 1. 核心组件概览
 
-```
+```txt
 milvus-encapsulation/
 ├── annotation/
 │   ├── CollectionName.java     # 集合名称注解
@@ -447,6 +447,23 @@ public PageResult<T> selectPage(PageParam param, String filter) {
         }
     }
 }
+
+private long queryCount(String filter, String collectionName, MilvusClientV2 client) {
+        QueryReq countReq = QueryReq.builder()
+                .collectionName(collectionName)
+                .filter(filter) // 与分页查询的筛选条件保持一致
+                .outputFields(Collections.singletonList("count(*)")) // 关键：通过 count(*) 统计总数
+                .build();
+        QueryResp countResp = client.query(countReq);
+
+        // 解析总记录数（count(*) 的结果是 Long 类型，需从返回的实体中提取）
+        long totalCount = 0;
+        if (!countResp.getQueryResults().isEmpty()) {
+            // 取出第一条结果的 "count(*)" 字段值（统计结果只有一条）
+            totalCount = (Long) countResp.getQueryResults().get(0).getEntity().get("count(*)");
+        }
+        return totalCount;
+    }
 ```
 
 **更新操作：**
@@ -897,7 +914,7 @@ Long sampleId = samplesService.createSamples(reqVO);
 ## 参考资料
 
 - [Milvus 官方文档](https://milvus.io/docs)
-- [Milvus Java SDK](https://github.com/milvus-io/milvus-sdk-java)
+- [Milvus Java SDK](https://milvus.io/api-reference/java/v2.5.x/About.md)
 - [Spring Boot 官方文档](https://spring.io/projects/spring-boot)
 - [MyBatis-Plus 官方文档](https://baomidou.com/)
 - [Hutool 官方文档](https://hutool.cn/)
